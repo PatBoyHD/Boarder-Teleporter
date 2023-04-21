@@ -15,7 +15,7 @@ public final class Main extends JavaPlugin {
     @Override
     public void onEnable() {
         // Plugin startup logic
-        Bukkit.getLogger().fine("Plugin wird aktiviert.");
+        Bukkit.getLogger().fine("Plugin activated.");
 
         this.config = new FileManager(this, config_name);
 
@@ -32,6 +32,7 @@ public final class Main extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+        Bukkit.getLogger().fine("Plugin deactivated.");
     }
 
     private void commandRegistration() {
