@@ -7,15 +7,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.util.Vector;
 
 public class MovementListener implements Listener {
 
-    //east = +x
-    //west = -x
 
-    double x_min = -12000;
-    double x_max = 12100;
+
+    double x_min = -12000;  //west = -x
+    double x_max = 12100;   //east = +x
 
     Main plugin;
 
@@ -35,18 +33,14 @@ public class MovementListener implements Listener {
     public void onMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
         Location location = player.getLocation();
-        double x = event.getTo().getX() - event.getFrom().getX();
-        double y = event.getTo().getY() - event.getFrom().getY();
-        double z = event.getTo().getZ() - event.getFrom().getZ();
 
 
-
-        //Wenn man im Westen ist (- Richtung)
+        //if at west side (-x direction)
         if (player.getLocation().getX() <= x_min) {
             location.setX(x_max - 1);
             player.teleport(findSaveSpot(location, player));
             player.sendMessage(ChatColor.GOLD + "You traveled so far into the west direction, you came out in the east!");
-        } else if (player.getLocation().getX() >= x_max) { //Wenn man im Osten ist (+ Richtung)
+        } else if (player.getLocation().getX() >= x_max) { //if at east side (+x direction)
             location.setX(x_min + 1);
             player.teleport(findSaveSpot(location, player));
             player.sendMessage(ChatColor.GOLD + "You traveled so far into the east direction, you came out in the west!");
