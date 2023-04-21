@@ -1,0 +1,6 @@
+name: BoarderTeleporter
+version: '${project.version}'
+main: de.patboyhd.boarderteleporter.Main
+api-version: 1.19
+authors: [ PatBoyHD ]
+description: A Plugin to teleport players like in pacman from side to side.
