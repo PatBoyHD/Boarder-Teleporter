@@ -3,6 +3,7 @@ package de.patboyhd.boarderteleporter.listeners;
 import de.patboyhd.boarderteleporter.Main;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Vehicle;
@@ -104,11 +105,14 @@ public class MovementListener implements Listener {
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
+        World world = plugin.getServer().getWorld("world");
 
-        if (player.isInsideVehicle()) {
-            teleportVehicle(player);
-        } else {
-            teleportPlayer(player);
+        if (player.getWorld().equals(world)) {
+            if (player.isInsideVehicle()) {
+                teleportVehicle(player);
+            } else {
+                teleportPlayer(player);
+            }
         }
 
     }
