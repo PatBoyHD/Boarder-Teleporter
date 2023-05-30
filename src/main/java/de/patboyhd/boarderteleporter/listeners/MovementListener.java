@@ -6,7 +6,6 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Vehicle;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -20,7 +19,9 @@ public class MovementListener implements Listener {
 
     double x_min = -12000;  //west = -x
     double x_max = 12100;   //east = +x
-    int distancetpboarder = 10;
+    double z_min = -6144;  //north = -z
+    double z_max = 6143;   //east = +z
+    int distancetpborder = 10;
 
     Main plugin;
 
@@ -41,13 +42,23 @@ public class MovementListener implements Listener {
 
         //if at west side (-x direction)
         if (player.getLocation().getX() <= x_min) {
-            location.setX(x_max - distancetpboarder);
+            location.setX(x_max - distancetpborder);
             player.teleport(findSaveSpot(location, player));
             player.sendMessage(ChatColor.GOLD + "You traveled so far into the west direction, you came out in the east!");
         } else if (player.getLocation().getX() >= x_max) { //if at east side (+x direction)
-            location.setX(x_min + distancetpboarder);
+            location.setX(x_min + distancetpborder);
             player.teleport(findSaveSpot(location, player));
             player.sendMessage(ChatColor.GOLD + "You traveled so far into the east direction, you came out in the west!");
+        }
+        //if at north side (-z direction)
+        if (player.getLocation().getZ() <= z_min) {
+            location.setZ(z_min + distancetpborder);
+            player.teleport(findSaveSpot(location, player));
+            player.sendMessage(ChatColor.GOLD + "You have reached the end of the world.");
+        } else if (player.getLocation().getZ() >= z_max) { //if at south side (+z direction)
+            location.setZ(z_max - distancetpborder);
+            player.teleport(findSaveSpot(location, player));
+            player.sendMessage(ChatColor.GOLD + "You have reached the end of the world.");
         }
 
     }
@@ -63,38 +74,69 @@ public class MovementListener implements Listener {
         Location location = player.getLocation();
         Entity vehicle = player.getVehicle();
         List entitylist = vehicle.getPassengers();
-        Location safelocation;
+        //Location finalSafelocation;
 
         BukkitScheduler scheduler = plugin.getServer().getScheduler();
 
         //if at west side (-x direction)
         if (player.getLocation().getX() <= x_min) {
-            location.setX(x_max - distancetpboarder);
-            safelocation = findSaveSpot(location, player);
-            player.getWorld().loadChunk(safelocation.getChunk());
+            location.setX(x_max - distancetpborder);
+            Location finalSafelocation = findSaveSpot(location, player);
+            player.getWorld().loadChunk(finalSafelocation.getChunk());
             for (int i = 0; i < entitylist.size(); i++) {
                 Entity entity = ((Entity) entitylist.get(i));
                 entity.leaveVehicle();
             }
-            vehicle.teleport(safelocation);
+            vehicle.teleport(finalSafelocation);
             scheduler.runTaskLater(plugin, () -> {
-                scheduledVehicleTeleport(entitylist, safelocation, vehicle);
+                scheduledVehicleTeleport(entitylist, finalSafelocation, vehicle);
             }, 20L );
             player.sendMessage(ChatColor.GOLD + "You traveled so far into the west direction, you came out in the east!");
 
         } else if (player.getLocation().getX() >= x_max) { //if at east side (+x direction)
-            location.setX(x_min + distancetpboarder);
-            safelocation = findSaveSpot(location, player);
-            player.getWorld().loadChunk(safelocation.getChunk());
+            location.setX(x_min + distancetpborder);
+            Location finalSafelocation = findSaveSpot(location, player);
+            player.getWorld().loadChunk(finalSafelocation.getChunk());
             for (int i = 0; i < entitylist.size(); i++) {
                 Entity entity = ((Entity) entitylist.get(i));
                 entity.leaveVehicle();
             }
-            vehicle.teleport(safelocation);
+            vehicle.teleport(finalSafelocation);
             scheduler.runTaskLater(plugin, () -> {
-                scheduledVehicleTeleport(entitylist, safelocation, vehicle);
+                scheduledVehicleTeleport(entitylist, finalSafelocation, vehicle);
             }, 20L );
             player.sendMessage(ChatColor.GOLD + "You traveled so far into the east direction, you came out in the west!");
+        }
+
+
+        //if at north side (-z direction)
+        if (player.getLocation().getZ() <= z_min) {
+            location.setZ(z_min + distancetpborder);
+            Location finalSafelocation = findSaveSpot(location, player);
+            player.getWorld().loadChunk(finalSafelocation.getChunk());
+            for (int i = 0; i < entitylist.size(); i++) {
+                Entity entity = ((Entity) entitylist.get(i));
+                entity.leaveVehicle();
+            }
+            vehicle.teleport(finalSafelocation);
+            scheduler.runTaskLater(plugin, () -> {
+                scheduledVehicleTeleport(entitylist, finalSafelocation, vehicle);
+            }, 20L );
+            player.sendMessage(ChatColor.GOLD + "You have reached the end of the world.");
+
+        } else if (player.getLocation().getZ() >= z_max) { //if at south side (+z direction)
+            location.setZ(z_max - distancetpborder);
+            Location finalSafelocation = findSaveSpot(location, player);
+            player.getWorld().loadChunk(finalSafelocation.getChunk());
+            for (int i = 0; i < entitylist.size(); i++) {
+                Entity entity = ((Entity) entitylist.get(i));
+                entity.leaveVehicle();
+            }
+            vehicle.teleport(finalSafelocation);
+            scheduler.runTaskLater(plugin, () -> {
+                scheduledVehicleTeleport(entitylist, finalSafelocation, vehicle);
+            }, 20L );
+            player.sendMessage(ChatColor.GOLD + "You have reached the end of the world.");
         }
 
 
